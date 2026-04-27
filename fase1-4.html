@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Mario 1-4</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body { background: #0d0d1a !important; }
+  .lava {
+    position:absolute; bottom:0; height:50px;
+    animation: lavaMove .8s linear infinite;
+    background: repeating-linear-gradient(90deg,#ff3300,#ff8800 20px,#ff3300 40px);
+    background-size:40px 100%;
+  }
+  @keyframes lavaMove { from{background-position:0 0} to{background-position:40px 0} }
+</style>
+</head>
+<body>
+<div id="viewport"><div id="world"></div></div>
+<div id="ui"></div>
+<script>
+/*
+  FASE 1-4 — Castelo com BOWSER (8 HP, super inteligente)
+  - Bowser persegue o Mario, pula periodicamente, cospe fogo em direção ao Mario
+  - Modo ENRAIVECIDO (hp<=4): +velocidade, 2 bolas de fogo por rajada
+  - Lava nos buracos — instantânea se Mario tocar
+  - Todos os tipos de inimigos
+*/
+window.LEVEL_CONFIG = {
+  id: "1-4",
+  width: 4400,
+
+  ground: [
+    { x:0,    w:860  },
+    { x:1060, w:600  },
+    { x:1840, w:560  },
+    { x:2580, w:520  },
+    { x:3280, w:1120 }
+  ],
+
+  pipes: [
+    { x:220,  h:70 },
+    { x:580,  h:90 },
+    { x:3320, h:70 }
+  ],
+
+  platforms: [
+    // Pulo sobre buraco 1 (860–1060)
+    { x:870,  y:170, w:130, h:20, color:"#445566", border:"#223344" },
+
+    // Escada de pedra
+    { x:1080, y:80,  w:60, h:20, color:"#445566", border:"#223344" },
+    { x:1160, y:140, w:60, h:20, color:"#445566", border:"#223344" },
+    { x:1240, y:200, w:60, h:20, color:"#445566", border:"#223344" },
+    { x:1320, y:260, w:60, h:20, color:"#445566", border:"#223344" },
+    { x:1400, y:200, w:60, h:20, color:"#445566", border:"#223344" },
+    { x:1480, y:140, w:60, h:20, color:"#445566", border:"#223344" },
+    { x:1560, y:80,  w:60, h:20, color:"#445566", border:"#223344" },
+
+    // Buraco 2 (1840–2580)
+    { x:1860, y:210, w:110, h:20, color:"#445566", border:"#223344" },
+    { x:2020, y:150, w:110, h:20, color:"#445566", border:"#223344" },
+    { x:2180, y:210, w:110, h:20, color:"#445566", border:"#223344" },
+    { x:2340, y:150, w:110, h:20, color:"#445566", border:"#223344" },
+    { x:2460, y:90,  w:110, h:20, color:"#445566", border:"#223344" },
+
+    // Buraco 3 (2580–3280)
+    { x:2600, y:190, w:100, h:20, color:"#445566", border:"#223344" },
+    { x:2760, y:130, w:100, h:20, color:"#445566", border:"#223344" },
+    { x:2920, y:190, w:100, h:20, color:"#445566", border:"#223344" },
+    { x:3080, y:130, w:100, h:20, color:"#445566", border:"#223344" },
+    { x:3200, y:70,  w:100, h:20, color:"#445566", border:"#223344" },
+
+    // Arena do Boss — plataformas para Mario escapar do fogo
+    { x:3560, y:170, w:130, h:20, color:"#8B0000", border:"#500000" },
+    { x:3760, y:250, w:130, h:20, color:"#8B0000", border:"#500000" },
+    { x:3960, y:170, w:130, h:20, color:"#8B0000", border:"#500000" }
+  ],
+
+  blocks: [
+    // lucky em x:340 — blocos afastados
+    { x:300,  y:190 }, { x:400,  y:190 },
+    // lucky em x:1140 — blocos afastados
+    { x:1100, y:260 }, { x:1200, y:260 },
+    // lucky em x:2000 — blocos afastados
+    { x:1960, y:290 }, { x:2060, y:290 },
+    // lucky em x:3480 — blocos afastados
+    { x:3440, y:190 }, { x:3540, y:190 }
+  ],
+
+  lucky: [
+    { x:340,  y:190 },
+    { x:1140, y:260 },
+    { x:2000, y:290 },
+    { x:3480, y:190 }
+  ],
+
+  coins: [
+    { x:140,  y:110 }, { x:180, y:110 }, { x:220, y:110 },
+    { x:940,  y:250 }, { x:980, y:250 },
+    { x:1900, y:290 }, { x:1940,y:290 }, { x:1980,y:290 },
+    { x:2640, y:270 }, { x:2680,y:270 }, { x:2720,y:270 },
+    { x:3440, y:130 }, { x:3480,y:130 }, { x:3520,y:130 }
+  ],
+
+  enemies: [
+    { x:460,  vx:-2.0 },
+    { x:740,  vx:-2.0 },
+    { x:1600, vx:-2.0 },
+    { x:3400, vx:-2.0 }
+  ],
+
+  koopas: [
+    { x:1220, vx:-2.5 },
+    { x:2060, vx:-2.5 },
+    { x:2360, vx:-2.0 }
+  ],
+
+  beetles: [
+    { x:1420, vx:-1.8 },
+    { x:2700, vx:-1.8 }
+  ],
+
+  piranhas: [
+    { pipeX:220, delay:50  },
+    { pipeX:580, delay:110 }
+  ],
+
+  boss: true,
+  nextLevel: null
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+  const w = document.getElementById("world");
+  [
+    { x:860,  width:200 },
+    { x:1840, width:740 },
+    { x:2580, width:700 }
+  ].forEach(g => {
+    const d = document.createElement("div");
+    d.className = "lava";
+    d.style.left  = g.x + "px";
+    d.style.width = g.width + "px";
+    w.appendChild(d);
+  });
+});
+</script>
+<script src="game.js"></script>
+</body>
+</html>

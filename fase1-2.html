@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Mario 1-2</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body { background: #1a1a2e !important; }
+</style>
+</head>
+<body>
+<div id="viewport"><div id="world"></div></div>
+<div id="ui"></div>
+<script>
+/*
+  FASE 1-2 — Subterrâneo
+  Mais inimigos variados, piranhas nos pipes
+*/
+window.LEVEL_CONFIG = {
+  id: "1-2",
+  width: 3800,
+
+  ground: [
+    { x:0,    w:600  },
+    { x:760,  w:480  },
+    { x:1380, w:420  },
+    { x:1940, w:580  },
+    { x:2660, w:480  },
+    { x:3280, w:520  }
+  ],
+
+  pipes: [
+    { x:180,  h:70 },
+    { x:2000, h:70 },
+    { x:3320, h:60 }
+  ],
+
+  platforms: [
+    { x:600,  y:140, w:120, h:20, color:"#556677", border:"#334455" },
+    { x:900,  y:80,  w:80,  h:20, color:"#556677", border:"#334455" },
+    { x:990,  y:140, w:80,  h:20, color:"#556677", border:"#334455" },
+    { x:1080, y:200, w:80,  h:20, color:"#556677", border:"#334455" },
+    { x:1170, y:140, w:80,  h:20, color:"#556677", border:"#334455" },
+    { x:1260, y:80,  w:80,  h:20, color:"#556677", border:"#334455" },
+    { x:1400, y:180, w:100, h:20, color:"#556677", border:"#334455" },
+    { x:1540, y:120, w:100, h:20, color:"#556677", border:"#334455" },
+    { x:1680, y:180, w:100, h:20, color:"#556677", border:"#334455" },
+    { x:1820, y:120, w:100, h:20, color:"#556677", border:"#334455" },
+    { x:2000, y:80,  w:120, h:20, color:"#556677", border:"#334455" },
+    { x:2200, y:160, w:100, h:20, color:"#556677", border:"#334455" },
+    { x:2680, y:200, w:80,  h:20, color:"#556677", border:"#334455" },
+    { x:2800, y:140, w:80,  h:20, color:"#556677", border:"#334455" },
+    { x:2920, y:200, w:80,  h:20, color:"#556677", border:"#334455" },
+    { x:3040, y:140, w:80,  h:20, color:"#556677", border:"#334455" },
+    { x:3160, y:80,  w:100, h:20, color:"#556677", border:"#334455" }
+  ],
+
+  blocks: [
+    // lucky em x:340 — blocos afastados
+    { x:300,  y:180 }, { x:400,  y:180 },
+    // lucky em x:820 — blocos afastados
+    { x:780,  y:180 }, { x:880,  y:180 },
+    // lucky em x:2120 — blocos afastados
+    { x:2080, y:180 }, { x:2180, y:180 },
+    // lucky em x:3460 — blocos afastados
+    { x:3420, y:180 }, { x:3520, y:180 }
+  ],
+
+  lucky: [
+    { x:340,  y:180 },
+    { x:820,  y:180 },
+    { x:2120, y:180 },
+    { x:3460, y:180 }
+  ],
+
+  coins: [
+    { x:100, y:100 }, { x:140, y:100 }, { x:180, y:100 },
+    { x:920, y:200 }, { x:960, y:200 }, { x:1000,y:200 },
+    { x:2020,y:160 }, { x:2060,y:160 },
+    { x:2710,y:280 }, { x:2790,y:220 }, { x:2870,y:280 },
+    { x:3380,y:100 }, { x:3420,y:100 }, { x:3460,y:100 }
+  ],
+
+  enemies: [
+    { x:380,  vx:-1.5 },
+    { x:1050, vx:-1.5 },
+    { x:2260, vx:-1.5 }
+  ],
+
+  koopas: [
+    { x:2020, vx:-2   },
+    { x:3360, vx:-2   }
+  ],
+
+  beetles: [
+    { x:850,  vx:-1.2 },
+    { x:2750, vx:-1.2 }
+  ],
+
+  piranhas: [
+    { pipeX:180,  delay:30  },
+    { pipeX:2000, delay:80  },
+    { pipeX:3320, delay:120 }
+  ],
+
+  boss: false,
+  nextLevel: "fase1-3.html"
+};
+</script>
+<script src="game.js"></script>
+</body>
+</html>

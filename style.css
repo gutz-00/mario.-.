@@ -1,0 +1,297 @@
+/* ═══════════════════════════════════════
+   MARIO DIVS — style.css
+   Fiel ao Super Mario Bros (NES)
+═══════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  background: #5c94fc;
+  image-rendering: pixelated;
+}
+
+/* Nuvens de fundo */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60px 30px at 10% 15%, rgba(255,255,255,.8) 0%, transparent 100%),
+    radial-gradient(ellipse 90px 40px at 30% 12%, rgba(255,255,255,.75) 0%, transparent 100%),
+    radial-gradient(ellipse 70px 32px at 60% 18%, rgba(255,255,255,.8) 0%, transparent 100%),
+    radial-gradient(ellipse 50px 24px at 80% 10%, rgba(255,255,255,.7) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+#viewport {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+#world {
+  position: absolute;
+  height: 100%;
+  will-change: transform;
+}
+
+/* ════════════════════════════════════
+   MARIO — Fiel ao sprite NES
+════════════════════════════════════ */
+.player {
+  position: absolute;
+  width: 40px; height: 48px;
+  box-sizing: border-box;
+  border: 2px solid #000;
+  border-radius: 6px 6px 2px 2px;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  transition: height 0.08s, transform 0.04s;
+  image-rendering: pixelated;
+}
+
+/* Chapéu / Camisa (vermelho) */
+.player::before {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 45%;
+  background: #e02020;
+  border-radius: 4px 4px 0 0;
+}
+
+/* Calça / Tênis (azul) */
+.player::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 55%;
+  background: #1a3fc4;
+}
+
+/* Animação de corrida */
+.player.running::after {
+  animation: run 0.22s steps(2) infinite;
+}
+
+@keyframes run {
+  0%   { background: #1a3fc4; }
+  50%  { background: #0a2a9a; border-radius: 0 0 6px 0; }
+  100% { background: #1a3fc4; }
+}
+
+/* Big Mario */
+.player.big {
+  height: 68px !important;
+  border-radius: 8px 8px 2px 2px;
+}
+.player.big::before { height: 50%; }
+
+/* Fire Mario */
+.player.fire {
+  height: 68px !important;
+}
+.player.fire::before {
+  background: #f0c020; /* Chapéu branco/amarelo */
+}
+.player.fire::after {
+  background: #cc2200; /* Roupa vermelha */
+}
+.player.fire.running::after {
+  animation: runFire 0.22s steps(2) infinite;
+}
+
+@keyframes runFire {
+  0%   { background: #cc2200; }
+  50%  { background: #882200; }
+  100% { background: #cc2200; }
+}
+
+/* ════════════════════════════════════
+   BLOCOS
+════════════════════════════════════ */
+.block {
+  position: absolute;
+  width: 40px; height: 40px;
+  background: #b05a10;
+  border: 3px solid #6a3000;
+  border-radius: 2px;
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,.15) 0%, transparent 50%),
+    repeating-linear-gradient(
+      90deg,
+      transparent, transparent 18px,
+      rgba(0,0,0,.2) 18px, rgba(0,0,0,.2) 19px
+    );
+}
+
+.lucky {
+  position: absolute;
+  width: 40px; height: 40px;
+  background: #f5b800;
+  border: 3px solid #a07000;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7a4400;
+  font-weight: bold;
+  font-size: 20px;
+  font-family: 'Press Start 2P', monospace;
+  box-shadow: inset 0 2px 0 rgba(255,255,255,.3);
+  transition: background 0.1s;
+}
+.lucky::after { content: "?"; }
+.lucky.used   { background: #888; border-color: #555; }
+
+/* ════════════════════════════════════
+   INIMIGOS
+════════════════════════════════════ */
+.enemy, .coin, .fireball, .boss {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+/* Goomba */
+.enemy {
+  width: 40px; height: 40px;
+  background: #8B1a00;
+  border: 3px solid #400;
+  border-radius: 50% 50% 10% 10%;
+  position: absolute;
+}
+
+/* Olhos do Goomba */
+.enemy::before {
+  content: "";
+  position: absolute;
+  top: 8px; left: 5px;
+  width: 10px; height: 10px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 15px 0 0 #fff;
+}
+
+/* Pupilas */
+.enemy::after {
+  content: "";
+  position: absolute;
+  top: 12px; left: 8px;
+  width: 5px; height: 5px;
+  background: #000;
+  border-radius: 50%;
+  box-shadow: 15px 0 0 #000;
+}
+
+/* Moeda */
+.coin {
+  width: 20px; height: 20px;
+  background: radial-gradient(circle at 38% 32%, #fff6b0, #ffe040 30%, #c88000);
+  border-radius: 50%;
+  border: 2px solid #a06000;
+  box-shadow: 0 0 5px rgba(255,200,0,.7), 0 0 0 1px rgba(255,255,0,.3);
+  animation: coinBob 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes coinBob {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-3px); }
+}
+
+/* Fireball do Mario */
+.fireball {
+  width: 18px; height: 18px;
+  background: radial-gradient(circle at 38% 32%, #fff, #ffcc00, #ff8800);
+  border: 2px solid #ff4400;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #ff6600, 0 0 16px rgba(255,100,0,.4);
+  animation: fbSpin 0.15s linear infinite;
+}
+
+@keyframes fbSpin {
+  from { box-shadow: 0 0 8px #ff6600, 0 0 16px rgba(255,100,0,.4); }
+  to   { box-shadow: 0 0 12px #ff9900, 0 0 20px rgba(255,150,0,.6); }
+}
+
+/* ════════════════════════════════════
+   BOSS (Bowser)
+════════════════════════════════════ */
+.boss {
+  width: 80px; height: 80px;
+  background: #8B0000;
+  border: 4px solid #400;
+  border-radius: 15px 15px 5px 5px;
+  position: absolute;
+}
+
+/* Espinhos do Bowser */
+.boss::before {
+  content: "";
+  position: absolute;
+  top: -14px; left: 8px;
+  width: 13px; height: 16px;
+  background: #006600;
+  border-radius: 50% 50% 0 0;
+  box-shadow: 18px 0 0 #006600, 36px 0 0 #006600, 54px 0 0 #006600;
+}
+
+/* Olhos do Bowser */
+.boss::after {
+  content: "";
+  position: absolute;
+  top: 18px; left: 10px;
+  width: 18px; height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 36px 0 0 #fff;
+}
+
+/* ════════════════════════════════════
+   HUD — Estilo NES
+════════════════════════════════════ */
+#ui {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: 8px 16px;
+  color: #fff;
+  font-family: 'Press Start 2P', 'Courier New', monospace;
+  font-size: 10px;
+  line-height: 1.6;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000;
+  z-index: 100;
+  background: linear-gradient(180deg, rgba(0,0,0,.7) 0%, rgba(0,0,0,.4) 80%, transparent 100%);
+  letter-spacing: 1px;
+}
+
+/* ════════════════════════════════════
+   PIPES / PLATAFORMAS / WORLD
+════════════════════════════════════ */
+.koopa-el, .beetle-el, .piranha-wrap {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+/* Lava (Fase 1-4) */
+.lava {
+  position: absolute;
+  bottom: 0;
+  height: 50px;
+  animation: lavaMove .7s linear infinite;
+  background: repeating-linear-gradient(
+    90deg,
+    #ff3300, #ff8800 20px, #ff3300 40px
+  );
+  background-size: 40px 100%;
+}
+
+@keyframes lavaMove {
+  from { background-position: 0 0; }
+  to   { background-position: 40px 0; }
+}
